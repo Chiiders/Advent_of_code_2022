@@ -1,0 +1,121 @@
+# %%
+import pandas as pd
+
+n = 'Day_2.txt'
+
+df= pd.read_csv(n,names= ['Rounds'])
+
+df
+
+Lib = {
+    'A':'Rock',
+    'B':'Paper',
+    'C':'Scissors',
+    'X':'Rock',
+    'Y':'Paper',
+    'Z':'Scissors',
+}
+
+val = {
+    'A':'1',
+    'B':'2',
+    'C':'3',
+    'X':'1',
+    'Y':'2',
+    'Z':'3',
+}
+
+
+play_output= {
+    'A X' : 'Draw',
+    'A Y' : 'Y',
+    'A Z' : 'A',
+    'B X' : 'B',
+    'B Y' : 'Draw',
+    'B Z' : 'Z',
+    'C X' : 'X',
+    'C Y' : 'C',
+    'C Z' : 'Draw',
+}
+
+winner= {
+    'A': 'Player_1',
+    'B': 'Player_1',
+    'C': 'Player_1',
+    'X': 'Player_2',
+    'Y': 'Player_2',
+    'Z': 'Player_2',
+    'Draw': 'Draw'
+    
+}
+
+
+
+# %%
+df[['A','Y']] = df['Rounds'].str.split(' ', expand= True)
+
+
+df
+
+# %%
+df['Play_1']=df['A'].map(Lib)
+df['Play_1_VAL']=df['A'].map(val)
+
+
+df['Play_2']=df['Y'].map(Lib)
+df['Play_2_VAL']=df['Y'].map(val)
+
+df['Winner'] = df['Rounds'].map(play_output)
+df['Win_score'] = df['Winner'].map(winner)
+
+
+## A X= 1 = rock
+## B Y= 2 = Paper
+## C Z= 3 = Scisors
+## 0 = loss
+## 3 = win
+
+
+df
+
+
+# %%
+import numpy as np
+
+x=0
+
+
+
+for i in df['Win_score']:
+    if df.loc[x, 'Win_score'] == 'Player_2':
+        t2 = df.loc[x,'Play_2_VAL']
+        print(f'T2 = {t2}')
+
+        
+        df.loc[x,'Score'] = np.add(int(t2),6)
+        x=x+1
+        print(f'x= {x}')
+    elif df.loc[x, 'Win_score'] == 'Player_1':
+        t2 = df.loc[x,'Play_2_VAL']
+        #df.loc[x,'Score'] = 'nan'
+        #df.loc[x,'Score'] = int(t2)
+        
+        df.loc[x,'Score'] = np.add(int(t2),0)
+        
+        x=x+1
+        print(f'x= {x}')
+    else:
+        t2 = df.loc[x,'Play_2_VAL']
+        #df.loc[x,'Score'] = int(t2)
+        
+        df.loc[x,'Score'] = np.add(int(t2),3)
+        x=x+1
+        print(f'x= {x}')
+
+
+
+
+# %%
+print(df['Score'].sum())
+
+
